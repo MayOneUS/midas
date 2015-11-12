@@ -251,7 +251,7 @@ var TaskFormView = Backbone.View.extend({
     // don't send those tags because the API returns 500
     if (tagSkills != []) tags.push.apply(tags, tagSkills);
     if (tagLocation != []) tags.push.apply(tags, tagLocation);
-    if (peopleCount != []) tags.push(peopleCount);
+    if (peopleCount != [] && peopleCount != null) tags.push(peopleCount);    
     if (effortType) tags.push.apply(tags,[{ id: effortType }]);
     // MAYDAY: prevents tags array from getting populated with null values (not sure if still needed)
     // if(this.$("#time-estimate").select2('data')) tags.push.apply(tags,[this.$("#time-estimate").select2('data')]);
