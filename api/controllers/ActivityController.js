@@ -1,38 +1,43 @@
 module.exports = {
 
   badges: function(req, res) {
-    var events = [];
     Task.find({
       state: 'completed',
-      sort: 'completedAt DESC',
-      limit: 25
+      sort: 'createdAt DESC',
+      limit: 30
     }).exec(function(err, tasks) {
       if (err) return res.negotiate(err);
-      Volunteer.find({ taskId: _.pluck(tasks, 'id') }).exec(function(err, vols) {
+      var taskIds = _.pluck(tasks, 'id');
+      Badge.find({ task: taskIds }).exec(function(err, badges){
         if (err) return res.negotiate(err);
-        User.find({ id: _.pluck(vols, 'userId') }).exec(function(err, users) {
+
+        Volunteer.find({ taskId: taskIds }).exec(function(err, vols) {
           if (err) return res.negotiate(err);
-          tasks.forEach(function(task) {
-            var ids = _(vols).chain()
-                  .where({ taskId: task.id })
-                  .pluck('userId').value(),
-                participants = _.filter(users, function(user) {
-                  return _.contains(ids, user.id);
-                });
-            events.push({
-              type: 'taskCompleted',
-              task: task,
-              participants: participants
+
+          User.find({ id: _.pluck(vols, 'userId') }).exec(function(err, users) {
+            if (err) return res.negotiate(err);
+
+            badges.forEach(function(badge){
+              badge.description = badge.getDescription();
+              badge.user = _.where(users, { id: badge.user })[0];
             });
-            participants.forEach(function(user) {
-              events.push({
-                type: 'participantBadge',
-                task: task,
-                user: user
+
+            tasks = tasks.map(function(task) {
+              var ids = _(vols).chain()
+                    .where({ taskId: task.id })
+                    .pluck('userId').value();
+
+              task.badges = _.where(badges, { task: task.id });
+              task.participants = _.filter(users, function(user) {
+                return _.contains(ids, user.id);
               });
+
+              return task;
             });
+
+            res.json(tasks);
+
           });
-          res.send(events);
         });
       });
     });

@@ -95,7 +95,7 @@ describe('project:', function() {
   describe('logged out:', function () {
 
     before(function () {
-      request = utils.init(true);
+      request = utils.init();
     });
 
     it('view draft project', function (done) {

@@ -1,0 +1,86 @@
+/*****************
+=  TASK LIST
+******************/
+.task-scroll .task {
+  overflow-y: hidden;
+}
+
+.task-box {
+  width: 240px;
+  height: 307px;
+  overflow: hidden;
+  float: left;
+  padding-top: 0;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.task-list-title {
+  padding: 5px 10px 0;
+  font-weight: 400;
+  font-size: 16px;
+  max-height: 50px;
+}
+
+.task-list-description {
+  max-height: 95px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  font-size: 13px;
+  word-wrap: break-word;
+}
+
+.task-list-bottom {
+  position: absolute;
+  top: 145px;
+  width: 100%;
+  padding: 5px 10px 0;
+}
+
+.task-list-bottom-person {
+  position: absolute;
+  width: 100%;
+  padding: 10px 10px 5px;
+  bottom: 0;
+}
+
+.task-list-requestbox {
+  padding-left: 45px;
+  line-height: 0.95em;
+  height: 44px;
+  overflow: none;
+}
+
+.task-list-requested {
+  font-size: 10px;
+  font-style: italic;
+  color: #9A9A9A;
+}
+
+.task-list-name {
+  font-size: 14px;
+}
+
+.task-list-agency {
+  font-size: 11px;
+  color: #505050;
+  max-height: 14px;
+}
+.task-list-icon-center {
+  width: 15px;
+  display: inline-block;
+  text-align: center;
+}
+
+.task-list-tags {
+  font-size: 12px;
+  max-height: 28px;
+  color: #505050;
+}
+
+.float-left {
+  float: left;
+}
+

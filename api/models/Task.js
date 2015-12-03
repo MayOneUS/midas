@@ -46,6 +46,21 @@ module.exports = {
             return true;
         }
         return false;
+    },
+    // Called when a task is marked as complete, and increments
+    // each participant's completedTasks counter
+    volunteersCompleted: function() {
+      var task = this;
+
+      Volunteer.find({ taskId: task.id }).exec(function(err, volunteers){
+        if (err) return done(err);
+
+        volunteers.forEach(function(vol) {
+          User.findOne({ id: vol.userId }).exec(function(err, user) {
+            user.taskCompleted(task);
+          });
+        });
+      });
     }
   },
 
@@ -85,6 +100,7 @@ module.exports = {
         case 'completed':
           values.completedAt = new Date();
           action = 'task.update.completed';
+          task.volunteersCompleted();
           break;
       }
 
@@ -100,7 +116,15 @@ module.exports = {
 
     });
   },
+  afterUpdate: function(task, done) {
+    var self = this;
 
+    Task.find({ userId: task.userId }).populate('tags').exec(function(err, tasks) {
+      if (err) return done(err);
+      Badge.awardForTaskPublish(tasks, task.userId);
+      done();
+    });
+  },
   beforeCreate: function(values, done) {
     // If default state is not draft, we need to set dates
     this.beforeUpdate(values, done);

@@ -1,7 +1,7 @@
 {
-  "name": "midas",
+  "name": "openopps-platform",
   "private": true,
-  "version": "0.7.6",
+  "version": "0.8.0",
   "description": "Innovation platform providing collaboration and crowdsourcing tools",
   "dependencies": {
     "async": "^0.2.9",
@@ -58,7 +58,10 @@
     "topojson": "^1.6.19",
     "uglifyify": "^3.0.1",
     "underscore": "^1.8.2",
-    "validator": "3.4.0"
+    "validator": "3.4.0",
+    "bourbon": "^4.2.6",
+    "bourbon-neat": "^1.7.2",
+    "grunt-sass": "^1.1.0"
   },
   "devDependencies": {
     "casper-chai": "^0.2.1",
@@ -72,11 +75,12 @@
     "dir": "."
   },
   "scripts": {
-    "preinstall": "if [ \"$THEME\" ]; then git clone $THEME _theme; npm run import --midas:dir=_theme; fi",
+    "preinstall": "if [ \"$THEME\" ]; then git clone $THEME _theme; npm run import --openopps-platform:dir=_theme; fi",
     "install": "npm run build",
     "test:api": "mocha test/test.upstart.js --recursive test/api",
     "test:browser": "npm run build && node test/browser/upstart.js",
-    "test": "npm run test:api && npm run test:browser",
+    "test:unit": "mocha test/test.upstart.js --recursive test/unit",
+    "test": "npm run test:unit && npm run test:api && npm run test:browser",
     "build": "$npm_package_config_grunt build",
     "start": "node app.js",
     "migrate": "./tools/postgres/init.sh",
@@ -88,9 +92,9 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/18F/midas.git"
+    "url": "https://github.com/18F/openopps-platform.git"
   },
-  "bugs": "https://github.com/18F/midas/issues",
+  "bugs": "https://github.com/18F/openopps-platform/issues",
   "license": "MIT",
   "engines": {
     "node": "0.10.x",

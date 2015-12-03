@@ -18,139 +18,38 @@ var fs = require('fs'),
     path = require('path'),
     exec = require('child_process').exec,
     browserify = require('browserify'),
-    stringify = require('stringify');
+    stringify = require('stringify'),
+    _ = require( 'lodash' );
 
 module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-jsonlint');
   grunt.loadNpmTasks('grunt-browserify');
-
   // Get path to core grunt dependencies from Sails
   var depsPath = grunt.option('gdsrc') || 'node_modules/sails/node_modules';
   grunt.loadTasks(depsPath + '/grunt-contrib-clean/tasks');
   grunt.loadTasks(depsPath + '/grunt-contrib-copy/tasks');
   grunt.loadTasks(depsPath + '/grunt-contrib-concat/tasks');
   grunt.loadTasks(depsPath + '/grunt-contrib-watch/tasks');
+  grunt.loadTasks( 'node_modules/grunt-sass/tasks' );
 
-  grunt.initConfig({
+  // -------------------------------------------------------------------
+  // Tooling Configuration
+  // -------------------------------------------------------------------
+  var config = _.assign(
 
-    browserify: {
-      prod: {
-        src: 'assets/js/backbone/app.js',
-        dest: 'assets/build/js/bundle.min.js',
-        options: {
-          browserifyOptions: { debug: false },
-          transform: ['stringify', ['uglifyify', { global: true }]],
-          require: ['./assets/js/vendor/jquery-shim.js:jquery'],
-        }
-      },
-      dev: {
-        src: 'assets/js/backbone/app.js',
-        dest: 'assets/build/js/bundle.js',
-        options: {
-          browserifyOptions: { debug: true },
-          transform: ['stringify'],
-          require: ['./assets/js/vendor/jquery-shim.js:jquery'],
-        }
-      }
-    },
+    { pkg: grunt.file.readJSON('package.json') },
+    require( './tools/grunt/config/sass' ),
+    require( './tools/grunt/config/browserify' ),
+    require( './tools/grunt/config/cssmin' ),
+    require( './tools/grunt/config/copy' ),
+    require( './tools/grunt/config/clean' ),
+    require( './tools/grunt/config/jsonlint' ),
+    require( './tools/grunt/config/watch' )
 
-    cssmin: {
-      combine: {
-        files: {
-          'assets/build/css/midas.css': [
-            'node_modules/bootstrap/dist/css/bootstrap.css',
-            'assets/styles/font-awesome/css/font-awesome.min.css',
-            'assets/styles/font-custom/css/style.css',
-            'node_modules/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css',
-            'node_modules/timepicker/jquery.timepicker.css',
-            'node_modules/blueimp-file-upload/css/jquery.fileupload.css',
-            'node_modules/Select2/select2.css',
-            'node_modules/leaflet/dist/leaflet.css',
-            'assets/styles/application.css',
-            'assets/styles/theme.css'
-          ]
-        },
-        options: {
-          report: 'min'
-        }
-      },
-      minify: {
-        expand: true,
-        cwd: 'assets/build/css/',
-        src: ['*.css', '!*.min.css'],
-        dest: 'assets/build/css/',
-        ext: '.min.css',
-        extDot: 'last',
-        options: {
-          report: 'min',
-          sourceMap: process.env.NODE_ENV !== 'production'
-        }
-      }
-    },
+  );
 
-    pkg: grunt.file.readJSON('package.json'),
-
-    copy: {
-      prod: {
-        files: [
-        {
-          expand: true,
-          cwd: './assets',
-          src: ['build/**/*', 'js/vendor/**/*', 'images/**/*', 'locales/**/*', 'data/**/*', 'uploads/**/*'],
-          dest: '.tmp/public'
-        }
-        ]
-      },
-      font: {
-        files: [
-        {
-          expand: true,
-          flatten: true,
-          cwd: './assets',
-          src: ['styles/font-awesome/fonts/*'],
-          dest: 'assets/build/fonts'
-        },
-        {
-          expand: true,
-          flatten: true,
-          cwd: './assets',
-          src: ['styles/font-custom/fonts/*'],
-          dest: 'assets/build/fonts'
-        },
-        {
-          expand: true,
-          flatten: true,
-          cwd: './assets',
-          src: ['fonts/*'],
-          dest: 'assets/build/fonts'
-        }
-        ]
-      },
-      csssupport: {
-        files: [
-        {
-          expand: true,
-          flatten: true,
-          cwd: './',
-          src: ['node_modules/Select2/*.png', 'node_modules/Select2/*.gif'],
-          dest: 'assets/build/css'
-        }
-        ]
-      }
-    },
-
-    clean: {
-      prod: ['.tmp/public/**']
-    },
-
-    jsonlint : {
-      sample: {
-        src:['assets/locales/**/*.json']
-      }
-    }
-
-  });
+  grunt.initConfig( config );
 
   // When Sails is lifted:
   grunt.registerTask('default', [
@@ -159,6 +58,10 @@ module.exports = function (grunt) {
     'jsonlint',
     // build js bundle
     'browserify:dev',
+    // compile sass
+    'sass',
+    // copy over sourcemaps
+    'copy:csssourcemaps',
     // compile the css
     'cssmin',
     // copy fonts
@@ -175,6 +78,10 @@ module.exports = function (grunt) {
     'jsonlint',
     // build js bundle
     'browserify',
+    // compile sass
+    'sass',
+    // copy over sourcemaps
+    'copy:csssourcemaps',
     // compile the css
     'cssmin',
     // copy fonts
@@ -191,6 +98,10 @@ module.exports = function (grunt) {
     'clean:prod',
     // copy fonts
     'copy:font',
+    // compile sass
+    'sass',
+    // copy over sourcemaps
+    'copy:csssourcemaps',
     // copy css-support images (images that css expects to be in the css directory)
     'copy:csssupport',
     // copy assets

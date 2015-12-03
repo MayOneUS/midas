@@ -102,15 +102,16 @@ module.exports = {
    */
   cleanUser: function (user, reqId) {
     var u = {
-      id: user.id,
-      username: user.username,
-      name: user.name,
-      title: user.title,
-      bio: user.bio,
-      tags: user.tags,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    };
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          title: user.title,
+          bio: user.bio,
+          tags: user.tags,
+          badges: user.badges,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+      };
     // if the requestor is the same as the user, show admin status
     if (user.id === reqId) {
       u.isAdmin = user.isAdmin;
@@ -134,43 +135,49 @@ module.exports = {
       cb = reqUser;
       reqUser = undefined;
     }
-    User.findOne({ id: userId }).populate('tags').populate('passports').exec(function (err, user) {
-      if (err || !user) { return cb("Error finding User.", null); }
-      delete user.deletedAt;
-      if (userId != reqId) {
-        user = self.cleanUser(user, reqId);
-      }
-      user.location = _.findWhere(user.tags, { type: 'location' });
-      user.agency = _.findWhere(user.tags, { type: 'agency' });
-      Like.countByTargetId(userId, function (err, likes) {
-        if (err) { return cb(err, null); }
-        user.likeCount = likes;
-        user.like = false;
-        user.isOwner = false;
-        Like.findOne({ where: { userId: reqId, targetId: userId }}, function (err, like) {
-          if (err) { return cb(err, null); }
-          if (like) { user.like = true; }
-
-          // stop here if the requester id is not the same as the user id
-          if (userId != reqId && !admin) return cb(null, user);
-
-          user.isOwner = true;
-
-          // Look up which providers the user has authorized
-          user.auths = [];
-          user.auths = _(user.passports).chain().filter(function(passport) {
-            return passport.provider && !passport.deletedAt;
-          }).map(function(passport) {
-            return {
-              provider: passport.provider,
-              id: passport.id,
-              token: passport.accessToken || passport.tokens.accessToken
-            };
-          }).value();
-
-          return cb(null, user);
+    User.findOne({ id: userId })
+      .populate('tags').populate('passports').populate('badges')
+      .exec(function (err, user) {
+        if (err || !user) { return cb("Error finding User.", null); }
+        delete user.deletedAt;
+        user.badges = user.badges.map(function(b) {
+          b.description = b.getDescription();
+          return b; 
         });
-      });
+        if (userId != reqId) {
+          user = self.cleanUser(user, reqId);
+        }
+        user.location = _.findWhere(user.tags, { type: 'location' });
+        user.agency = _.findWhere(user.tags, { type: 'agency' });
+        Like.countByTargetId(userId, function (err, likes) {
+          if (err) { return cb(err, null); }
+          user.likeCount = likes;
+          user.like = false;
+          user.isOwner = false;
+          Like.findOne({ where: { userId: reqId, targetId: userId }}, function (err, like) {
+            if (err) { return cb(err, null); }
+            if (like) { user.like = true; }
+
+            // stop here if the requester id is not the same as the user id
+            if (userId != reqId && !admin) return cb(null, user);
+
+            user.isOwner = true;
+
+            // Look up which providers the user has authorized
+            user.auths = [];
+            user.auths = _(user.passports).chain().filter(function(passport) {
+              return passport.provider && !passport.deletedAt;
+            }).map(function(passport) {
+              return {
+                provider: passport.provider,
+                id: passport.id,
+                token: passport.accessToken || passport.tokens.accessToken
+              };
+            }).value();
+
+            return cb(null, user);
+          });
+        });
 
     });
   },

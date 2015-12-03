@@ -10,14 +10,14 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -30,7 +30,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: attachment; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: attachment; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE attachment (
@@ -69,7 +69,46 @@ ALTER SEQUENCE attachment_id_seq OWNED BY attachment.id;
 
 
 --
--- Name: comment; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: badge; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
+--
+
+CREATE TABLE badge (
+    "user" integer,
+    task integer,
+    id integer NOT NULL,
+    type character varying,
+    silent boolean DEFAULT false,
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone,
+    "deletedAt" timestamp with time zone
+);
+
+
+ALTER TABLE badge OWNER TO midas;
+
+--
+-- Name: badge_id_seq; Type: SEQUENCE; Schema: public; Owner: midas
+--
+
+CREATE SEQUENCE badge_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE badge_id_seq OWNER TO midas;
+
+--
+-- Name: badge_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: midas
+--
+
+ALTER SEQUENCE badge_id_seq OWNED BY badge.id;
+
+
+--
+-- Name: comment; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE comment (
@@ -110,7 +149,7 @@ ALTER SEQUENCE comment_id_seq OWNED BY comment.id;
 
 
 --
--- Name: delivery; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: delivery; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE delivery (
@@ -151,7 +190,7 @@ ALTER SEQUENCE delivery_id_seq OWNED BY delivery.id;
 
 
 --
--- Name: event; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: event; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE event (
@@ -195,7 +234,7 @@ ALTER SEQUENCE event_id_seq OWNED BY event.id;
 
 
 --
--- Name: eventrsvp; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: eventrsvp; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE eventrsvp (
@@ -232,7 +271,7 @@ ALTER SEQUENCE eventrsvp_id_seq OWNED BY eventrsvp.id;
 
 
 --
--- Name: file; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: file; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE file (
@@ -274,7 +313,7 @@ ALTER SEQUENCE file_id_seq OWNED BY file.id;
 
 
 --
--- Name: like; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: like; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE "like" (
@@ -313,7 +352,7 @@ ALTER SEQUENCE like_id_seq OWNED BY "like".id;
 
 
 --
--- Name: midas_user; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: midas_user; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE midas_user (
@@ -329,7 +368,8 @@ CREATE TABLE midas_user (
     id integer NOT NULL,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
-    "deletedAt" timestamp with time zone
+    "deletedAt" timestamp with time zone,
+    "completedTasks" integer DEFAULT 0 NOT NULL
 );
 
 
@@ -357,15 +397,14 @@ ALTER SEQUENCE midas_user_id_seq OWNED BY midas_user.id;
 
 
 --
--- Name: notification; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: notification; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE notification (
-    action text,
-    model json,
     "callerId" integer,
     "callerType" text,
     "triggerGuid" text,
+    action text,
     audience text,
     "recipientId" integer,
     "createdDate" timestamp with time zone,
@@ -375,7 +414,8 @@ CREATE TABLE notification (
     id integer NOT NULL,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
-    "deletedAt" timestamp with time zone
+    "deletedAt" timestamp with time zone,
+    model json
 );
 
 
@@ -403,7 +443,7 @@ ALTER SEQUENCE notification_id_seq OWNED BY notification.id;
 
 
 --
--- Name: passport; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: passport; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE passport (
@@ -445,7 +485,7 @@ ALTER SEQUENCE passport_id_seq OWNED BY passport.id;
 
 
 --
--- Name: project; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: project; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE project (
@@ -484,7 +524,7 @@ ALTER SEQUENCE project_id_seq OWNED BY project.id;
 
 
 --
--- Name: project_tags__tagentity_projects; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: project_tags__tagentity_projects; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE project_tags__tagentity_projects (
@@ -519,7 +559,7 @@ ALTER SEQUENCE project_tags__tagentity_projects_id_seq OWNED BY project_tags__ta
 
 
 --
--- Name: projectowner; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: projectowner; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE projectowner (
@@ -556,7 +596,7 @@ ALTER SEQUENCE projectowner_id_seq OWNED BY projectowner.id;
 
 
 --
--- Name: projectparticipant; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: projectparticipant; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE projectparticipant (
@@ -593,7 +633,7 @@ ALTER SEQUENCE projectparticipant_id_seq OWNED BY projectparticipant.id;
 
 
 --
--- Name: projecttag; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: projecttag; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE projecttag (
@@ -630,7 +670,7 @@ ALTER SEQUENCE projecttag_id_seq OWNED BY projecttag.id;
 
 
 --
--- Name: schema; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: schema; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE schema (
@@ -642,7 +682,7 @@ CREATE TABLE schema (
 ALTER TABLE schema OWNER TO midas;
 
 --
--- Name: session; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: session; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE session (
@@ -655,7 +695,7 @@ CREATE TABLE session (
 ALTER TABLE session OWNER TO midas;
 
 --
--- Name: tag; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: tag; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE tag (
@@ -694,17 +734,17 @@ ALTER SEQUENCE tag_id_seq OWNED BY tag.id;
 
 
 --
--- Name: tagentity; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: tagentity; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE tagentity (
     type text,
     name text,
-    data json,
     id integer NOT NULL,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
-    "deletedAt" timestamp with time zone
+    "deletedAt" timestamp with time zone,
+    data json
 );
 
 
@@ -732,7 +772,7 @@ ALTER SEQUENCE tagentity_id_seq OWNED BY tagentity.id;
 
 
 --
--- Name: tagentity_tasks__task_tags; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: tagentity_tasks__task_tags; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE tagentity_tasks__task_tags (
@@ -767,7 +807,7 @@ ALTER SEQUENCE tagentity_tasks__task_tags_id_seq OWNED BY tagentity_tasks__task_
 
 
 --
--- Name: tagentity_users__user_tags; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: tagentity_users__user_tags; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE tagentity_users__user_tags (
@@ -802,7 +842,7 @@ ALTER SEQUENCE tagentity_users__user_tags_id_seq OWNED BY tagentity_users__user_
 
 
 --
--- Name: task; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: task; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE task (
@@ -811,14 +851,14 @@ CREATE TABLE task (
     "projectId" integer,
     title text,
     description text,
-    "completedBy" timestamp with time zone,
-    "publishedAt" timestamp with time zone,
-    "assignedAt" timestamp with time zone,
-    "completedAt" timestamp with time zone,
     id integer NOT NULL,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
-    "deletedAt" timestamp with time zone
+    "deletedAt" timestamp with time zone,
+    "publishedAt" timestamp with time zone,
+    "assignedAt" timestamp with time zone,
+    "completedAt" timestamp with time zone,
+    "completedBy" timestamp with time zone
 );
 
 
@@ -846,7 +886,7 @@ ALTER SEQUENCE task_id_seq OWNED BY task.id;
 
 
 --
--- Name: userauth; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: userauth; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE userauth (
@@ -887,7 +927,7 @@ ALTER SEQUENCE userauth_id_seq OWNED BY userauth.id;
 
 
 --
--- Name: useremail; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: useremail; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE useremail (
@@ -927,7 +967,7 @@ ALTER SEQUENCE useremail_id_seq OWNED BY useremail.id;
 
 
 --
--- Name: usernotification; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: usernotification; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE usernotification (
@@ -964,7 +1004,7 @@ ALTER SEQUENCE usernotification_id_seq OWNED BY usernotification.id;
 
 
 --
--- Name: userpassword; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: userpassword; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE userpassword (
@@ -1001,7 +1041,7 @@ ALTER SEQUENCE userpassword_id_seq OWNED BY userpassword.id;
 
 
 --
--- Name: userpasswordreset; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: userpasswordreset; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE userpasswordreset (
@@ -1038,7 +1078,7 @@ ALTER SEQUENCE userpasswordreset_id_seq OWNED BY userpasswordreset.id;
 
 
 --
--- Name: usersetting; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: usersetting; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE usersetting (
@@ -1078,17 +1118,17 @@ ALTER SEQUENCE usersetting_id_seq OWNED BY usersetting.id;
 
 
 --
--- Name: volunteer; Type: TABLE; Schema: public; Owner: midas; Tablespace:
+-- Name: volunteer; Type: TABLE; Schema: public; Owner: midas; Tablespace: 
 --
 
 CREATE TABLE volunteer (
     "taskId" integer,
     "userId" integer,
     id integer NOT NULL,
-    silent boolean,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
-    "deletedAt" timestamp with time zone
+    "deletedAt" timestamp with time zone,
+    silent boolean
 );
 
 
@@ -1120,6 +1160,13 @@ ALTER SEQUENCE volunteer_id_seq OWNED BY volunteer.id;
 --
 
 ALTER TABLE ONLY attachment ALTER COLUMN id SET DEFAULT nextval('attachment_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: midas
+--
+
+ALTER TABLE ONLY badge ALTER COLUMN id SET DEFAULT nextval('badge_id_seq'::regclass);
 
 
 --
@@ -1305,7 +1352,7 @@ ALTER TABLE ONLY volunteer ALTER COLUMN id SET DEFAULT nextval('volunteer_id_seq
 
 
 --
--- Name: attachment_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: attachment_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY attachment
@@ -1313,7 +1360,7 @@ ALTER TABLE ONLY attachment
 
 
 --
--- Name: comment_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: comment_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY comment
@@ -1321,7 +1368,7 @@ ALTER TABLE ONLY comment
 
 
 --
--- Name: delivery_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: delivery_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY delivery
@@ -1329,7 +1376,7 @@ ALTER TABLE ONLY delivery
 
 
 --
--- Name: event_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: event_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY event
@@ -1337,7 +1384,7 @@ ALTER TABLE ONLY event
 
 
 --
--- Name: eventrsvp_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: eventrsvp_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY eventrsvp
@@ -1345,7 +1392,7 @@ ALTER TABLE ONLY eventrsvp
 
 
 --
--- Name: file_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: file_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY file
@@ -1353,7 +1400,7 @@ ALTER TABLE ONLY file
 
 
 --
--- Name: like_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: like_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY "like"
@@ -1361,7 +1408,7 @@ ALTER TABLE ONLY "like"
 
 
 --
--- Name: midas_user_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: midas_user_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY midas_user
@@ -1369,7 +1416,7 @@ ALTER TABLE ONLY midas_user
 
 
 --
--- Name: midas_user_username_key; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: midas_user_username_key; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY midas_user
@@ -1377,7 +1424,7 @@ ALTER TABLE ONLY midas_user
 
 
 --
--- Name: notification_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: notification_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY notification
@@ -1385,7 +1432,7 @@ ALTER TABLE ONLY notification
 
 
 --
--- Name: passport_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: passport_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY passport
@@ -1393,7 +1440,7 @@ ALTER TABLE ONLY passport
 
 
 --
--- Name: project_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: project_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY project
@@ -1401,7 +1448,7 @@ ALTER TABLE ONLY project
 
 
 --
--- Name: project_tags__tagentity_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: project_tags__tagentity_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY project_tags__tagentity_projects
@@ -1409,7 +1456,7 @@ ALTER TABLE ONLY project_tags__tagentity_projects
 
 
 --
--- Name: projectowner_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: projectowner_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY projectowner
@@ -1417,7 +1464,7 @@ ALTER TABLE ONLY projectowner
 
 
 --
--- Name: projectparticipant_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: projectparticipant_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY projectparticipant
@@ -1425,7 +1472,7 @@ ALTER TABLE ONLY projectparticipant
 
 
 --
--- Name: projecttag_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: projecttag_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY projecttag
@@ -1433,7 +1480,7 @@ ALTER TABLE ONLY projecttag
 
 
 --
--- Name: session_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: session_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY session
@@ -1441,7 +1488,7 @@ ALTER TABLE ONLY session
 
 
 --
--- Name: tag_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: tag_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY tag
@@ -1449,7 +1496,7 @@ ALTER TABLE ONLY tag
 
 
 --
--- Name: tagentity_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: tagentity_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY tagentity
@@ -1457,7 +1504,7 @@ ALTER TABLE ONLY tagentity
 
 
 --
--- Name: tagentity_tasks__task_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: tagentity_tasks__task_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY tagentity_tasks__task_tags
@@ -1465,7 +1512,7 @@ ALTER TABLE ONLY tagentity_tasks__task_tags
 
 
 --
--- Name: tagentity_users__user_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: tagentity_users__user_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY tagentity_users__user_tags
@@ -1473,7 +1520,7 @@ ALTER TABLE ONLY tagentity_users__user_tags
 
 
 --
--- Name: task_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: task_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY task
@@ -1481,7 +1528,7 @@ ALTER TABLE ONLY task
 
 
 --
--- Name: userauth_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: userauth_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY userauth
@@ -1489,7 +1536,7 @@ ALTER TABLE ONLY userauth
 
 
 --
--- Name: useremail_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: useremail_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY useremail
@@ -1497,7 +1544,7 @@ ALTER TABLE ONLY useremail
 
 
 --
--- Name: usernotification_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: usernotification_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY usernotification
@@ -1505,7 +1552,7 @@ ALTER TABLE ONLY usernotification
 
 
 --
--- Name: userpassword_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: userpassword_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY userpassword
@@ -1513,7 +1560,7 @@ ALTER TABLE ONLY userpassword
 
 
 --
--- Name: userpasswordreset_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: userpasswordreset_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY userpasswordreset
@@ -1521,7 +1568,7 @@ ALTER TABLE ONLY userpasswordreset
 
 
 --
--- Name: usersetting_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: usersetting_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY usersetting
@@ -1529,7 +1576,7 @@ ALTER TABLE ONLY usersetting
 
 
 --
--- Name: volunteer_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace:
+-- Name: volunteer_pkey; Type: CONSTRAINT; Schema: public; Owner: midas; Tablespace: 
 --
 
 ALTER TABLE ONLY volunteer
@@ -1537,11 +1584,12 @@ ALTER TABLE ONLY volunteer
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: midas
+-- Name: public; Type: ACL; Schema: -; Owner: jeremiakimelman
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM midas;
+REVOKE ALL ON SCHEMA public FROM jeremiakimelman;
+GRANT ALL ON SCHEMA public TO jeremiakimelman;
 GRANT ALL ON SCHEMA public TO midas;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
@@ -1549,3 +1597,4 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 --
 -- PostgreSQL database dump complete
 --
+

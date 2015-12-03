@@ -211,7 +211,6 @@ describe('Profile actions', function() {
 
     // Fill out the login form
     casper.then(function() {
-      casper.capture('ss/c.png');
       var fields = {
         '#username': config.user.username,
         '#password': config.user.password

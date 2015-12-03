@@ -5,7 +5,7 @@ var async = require('async');
 var _ = require('underscore');
 
 module.exports = {
-  init: function(keepDb) {
+  init: function() {
     var j = request.jar();
     var r = request.defaults({ jar: j, followRedirect: false });
     return r;

@@ -34,11 +34,26 @@ var DashboardView = Backbone.View.extend({
 
     this.$el.html(templates.main());
 
-    this.listenTo(badges, 'activity:collection:fetch:success', function (e) {
-      var data = { badges: e.toJSON() },
-          badgesHtml = templates.badges(data);
-      self.setTarget('badges-feed', badgesHtml);
-    });
+    /*
+     * Listen for badges. This callback function uses Backbone's trigger method
+     * to retrieve the badges information whenever the ActivityCollection is
+     * fetched successfully.
+     * @param ActivityCollection | An activity collection.
+     * @param String             | A Backbone event string to bind to..
+     * @param Function           | A callback function containing the event data.
+     * @see   /assets/js/backbone/entities/activities/activities_collection.js
+     */
+    this.listenTo( badges, 'activity:collection:fetch:success', function ( e ) {
+
+      var bs = e.toJSON().filter( function( b ) {
+        return b.participants.length > 0;
+      } );
+
+      var badgesHtml = templates.badges( { badges: bs } );
+
+      self.setTarget( 'badges-feed', badgesHtml );
+
+    } );
 
     this.listenTo(users, 'activity:collection:fetch:success', function (e) {
       var data = { users: e.toJSON() },

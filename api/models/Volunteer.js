@@ -20,7 +20,10 @@ module.exports = {
 
   // create notification after creating a volunteer
   afterCreate: function(model, done) {
+    this.assignVolunteerCountBadges(model);
+
     if (model.silent === true) return done();
+
     Notification.create({
       action: 'volunteer.create.thanks',
       model: model
@@ -34,5 +37,27 @@ module.exports = {
       // but we're only deleting them one at a time
       model: model[0]
     }, done);
+  },
+
+  assignVolunteerCountBadges: function (model) {
+
+    Volunteer.find({ taskId: model.taskId }).exec(function(err, vols) {
+      if (err) return;
+
+      Task.findOne({ id: model.taskId }).exec(function(err, task) {
+        var badge = {
+          user: task.userId,
+          type: 'team builder',
+          task: model.taskId
+        };
+        if (err) return;
+        if (vols.length === 4) {
+          Badge.findOrCreate(badge, badge).exec(function(err, b){
+            if (err) return console.error(err);
+          });
+        }
+      });
+    });
+
   }
 };

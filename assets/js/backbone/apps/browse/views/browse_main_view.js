@@ -39,11 +39,11 @@ var BrowseMainView = Backbone.View.extend({
         user: window.cache.currentUser,
         ui: UIConfig,
         placeholder: target === 'tasks' ?
-          "I'm looking for opportunities by name, agency, skill, topic, description..." :
+          "I'm looking for opportunities by name, " + i18n.t("tag.agency") + ", skill, topic, description..." :
           target === 'projects' ?
-          "I'm looking for working groups by name, agency, skill, topic, description..." :
+          "I'm looking for working groups by name, " + i18n.t("tag.agency") + ", skill, topic, description..." :
           target === 'profiles' ?
-          "I'm looking for people by name, title, agency, location..." :
+          "I'm looking for people by name, title,  " + i18n.t("tag.agency") + ", location..." :
           "I'm looking for..."
       };
     this.rendered = _.template(BrowseMainTemplate)(options);

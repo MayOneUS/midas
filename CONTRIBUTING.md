@@ -50,12 +50,16 @@ export LINKEDIN_CALLBACK_URL=http://localhost:1337/api/auth/callback/linkedin
 export MYUSA_CLIENT_ID=0a33d1c4df848fa1ec666068285e903
 export MYUSA_CLIENT_SECRET=bc4b61e58a579efb8907f5d673cef9f34e
 export MYUSA_CALLBACK_URL=http://localhost:1337/api/auth/callback/myusa
+
+export DATABASE_URL=midas
 ```
 
 ### Testing
 
 To run all the tests:
-```npm test```
+```
+npm test
+```
 
 For testing in Midas, we are using:
 * [mocha](http://visionmedia.github.io/mocha/) test framework
@@ -229,3 +233,5 @@ from the main (upstream) repository:
 ### Reviewing Pull Requests
 
 Except for critical, urgent or very small fixes, we try to leave pull requests open for most of the day or overnight if something comes in late in the day, so that multiple people have the chance to review/comment.  Anyone who reviews a pull request should leave a note to let others know that someone has looked at it.  For larger commits, we like to have a +1 from someone else on the core team and/or from other contributor(s).  Please note if you reviewed the code or tested locally -- a +1 by itself will typically be interpreted as your thinking its a good idea, but not having reviewed in detail.
+
+If the PR contains a database migration, please tag it with the 

@@ -1,5 +1,16 @@
 Installation
 =====
+- [Deploy Midas as a Docker Container from the Docker Hub](#deploy-midas-as-a-docker-container-from-the-docker-hub-mac-windows-linux)
+- [Step by Step Installation from Source](#step-by-step-installation-from-source)
+    - [Mac OSX](#mac-osx)
+    - [Linux (Ubuntu 12.04 LTS)](#linux-ubuntu-1204-lts)
+    - [Windows](#windows-windows-2008-server)
+    - [All Platforms](#all-platforms)
+- [For development](#for-development)
+- [For production](#for-production)
+- [Host and Configure Application](#host-and-configure-application)
+
+
 
 ## Deploy Midas as a Docker Container from the Docker Hub (Mac, Windows, Linux):
 
@@ -127,6 +138,50 @@ AND modify `pg_hba.conf`:
 
      sudo apt-get install graphicsmagick
 
+### Windows (Windows 2008 Server)
+
+#### Install Visual C++ 2008 x64 or x86 Redistributable Package
+
+[Runtime 64](http://www.microsoft.com/en-us/download/details.aspx?id=15336)
+  or
+[Runtime 32](http://www.microsoft.com/en-us/download/details.aspx?id=29)
+
+Reboot server once finished
+
+#### Install/Configure Postgres 9.2+ via windows msi installer
+
+[PostgreSQL](http://www.postgresql.org/download/windows/`)
+
+Establish admin user account during the wizard and verify that PostgreSQL is running as a service
+
+Open pgAdmin
+
+  Create database 'midas', user account 'midas' with password 'midas', and assign user 'midas' full rights to administer DB 'midas'
+
+#### Install Node.js via Windows MSI, select all available add-ons
+**_Note that currently Midas has a dependency on nodejs version .10+ and is not tested to work with .11 or .12, do not attempt to install a version higher than node ver .10.38_**
+
+[Node.js](http://nodejs.org/dist/v0.10.38/)
+
+#### Install GraphicsMagick
+
+[GraphicsMagick](ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/windows/`)
+
+Select Q8 version along with latest corresponding to 32 bit vs. 64 bit OS
+
+#### Set System Path Variables
+
+Go to Control Panel -> System -> Advanced System Settings -> Environment Variables
+Find "Path" Variable in System Variables table and double click to edit it. Make sure it contains all of the following parts (in 	addition to anything else) separated by a semi-colon.
+
+	DRIVE:\program files\graphicsmagick-1.3.18-q8;
+	(or similar, depending on your graphicsmagick version)
+	DRIVE:\Program Files\nodejs\;
+
+Save.
+
+### All Platforms
+
 #### Clone the git repository.
 
      git clone https://github.com/18F/midas.git
@@ -202,6 +257,8 @@ On Mac OSX, you may receive a stream of
 
 messages after running `npm start`. This is an issue with OSX and Grunt; there are directions to fix the issue [here](https://github.com/gruntjs/grunt-contrib-copy/issues/21) or [here](http://unix.stackexchange.com/questions/108174/how-to-persist-ulimit-settings-in-osx-mavericks).
 
+---------------------------------------
+
 ## For production
 
 #### Compile production JS and CSS (from the midas git folder)
@@ -240,49 +297,9 @@ Configure nginx with the files in the tools folder.  Use the SSL config file if 
 
 With the application server running and nginx running, you should now be able to access the application at `http://localhost`
 
-### Windows (Windows 2008 Server)
+---------------------------------------
 
-#### Install Visual C++ 2008 x64 or x86 Redistributable Package
-
-[Runtime 64](http://www.microsoft.com/en-us/download/details.aspx?id=15336)
-     or
-[Runtime 32](http://www.microsoft.com/en-us/download/details.aspx?id=29)
-
-Reboot server once finished
-
-#### Install/Configure Postgres 9.2+ via windows msi installer
-
-[PostgreSQL](http://www.postgresql.org/download/windows/`)
-
-Establish admin user account during the wizard and verify that PostgreSQL is running as a service
-
-Open pgAdmin
-
-     Create database 'midas', user account 'midas' with password 'midas', and assign user 'midas' full rights to administer DB 'midas'
-
-#### Install Node.js via Windows MSI, select all available add-ons
-**_Note that currently Midas has a dependency on nodejs version .10+ and is not tested to work with .11 or .12, do not attempt to install a version higher than node ver .10.38_**
-
-[Node.js](http://nodejs.org/dist/v0.10.38/)
-
-#### Install GraphicsMagick
-
-[GraphicsMagick](ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/windows/`)
-
-Select Q8 version along with latest corresponding to 32 bit vs. 64 bit OS
-
-#### Set System Path Variables
-
-Go to Control Panel -> System -> Advanced System Settings -> Environment Variables
-Find "Path" Variable in System Variables table and double click to edit it. Make sure it contains all of the following parts (in 	addition to anything else) separated by a semi-colon.
-
-	DRIVE:\program files\graphicsmagick-1.3.18-q8;
-	(or similar, depending on your graphicsmagick version)
-	DRIVE:\Program Files\nodejs\;
-
-Save.
-
-### Host and Configure Application
+## Host and Configure Application
 
 #### If hosting on an on-line server
 
@@ -300,7 +317,7 @@ Navigate to Midas directory via windows cmd.exe prompt
 
 Enter the following commands
 
-	npm install
+   npm install
 
 Start Midas with
 

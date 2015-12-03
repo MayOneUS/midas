@@ -145,7 +145,7 @@ describe('tag:', function() {
   describe('logged out:', function () {
 
     before(function () {
-      request = utils.init(true);
+      request = utils.init();
     });
 
     it('add denied', function (done) {

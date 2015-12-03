@@ -127,8 +127,17 @@
     </div>
   </div>
   <div class="col-sm-3 col-md-4">
-    <!-- <div class="box box-pad-lr">
+    <div class="box box-pad-lr">
       <h2>Badges</h2>
-    </div> -->
+      <ul class="profile-badges">
+        <% _.map(data.badges, function (b) { %>
+          <li class="profile-badge">
+            <% var filename = b.type.replace(' ', '-'); %>
+            <img src="/images/badges/<%- filename %>.png" alt="The <%- b.type %> badge is awarded when you <%- b.description %>" title="The <%- b.type %> badge is awarded when you <%- b.description %>">
+            <p><%- b.type %></p>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
   </div>
 </div>

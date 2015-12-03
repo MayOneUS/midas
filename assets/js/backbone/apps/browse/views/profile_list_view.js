@@ -18,6 +18,7 @@ var PeopleListView = Backbone.View.extend({
     // just render the collection that you were created with (prob. everyone).
     var peopleToRender = peopleSelection ? peopleSelection : this.people;
     this.$el.html(this.template({people: peopleToRender}));
+    this.$el.i18n();
   },
 
   empty: function () {

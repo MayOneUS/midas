@@ -140,7 +140,7 @@
   <table class="table task-metrics-table">
     <thead>
       <tr>
-        <th scope="col">Agencies</th>
+        <th scope="col" data-i18n="tag.AgencyPlural" ></th>
         <% _.each(range, function(key) { %>
         <th scope="col"><%- label(key) %></th>
         <% }); %>
@@ -148,7 +148,7 @@
     </thead>
     <tbody>
       <tr>
-        <th scope="row">Agencies <small>(with people who have signed up for tasks)</small></th>
+        <th scope="row"><span data-i18n="tag.AgencyPlural"></span> <small>(with people who have signed up for tasks)</small></th>
         <% _.each(range, function(key) { %>
         <td><%- agencies[key] || 0 %></td>
         <% }); %>
